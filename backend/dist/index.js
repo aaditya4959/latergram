@@ -21,6 +21,8 @@ const PORT = process.env.PORT || 8080;
 const app = (0, express_1.default)();
 app.use(body_parser_1.default.json());
 // 
+// There is some problem in the dupllicate records found in the signup process (Some error comes).
+// To be solved later.
 app.post("/api/v1/signup", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Signup Request Incoming");
     const { username, password } = req.body;
@@ -87,7 +89,6 @@ app.get("api/v1/brain/share:link", (req, res) => __awaiter(void 0, void 0, void 
 // Call the database connection function and after that start the server.
 (0, dbConnection_1.db)()
     .then(() => {
-    console.log("Database connected successfully. Starting server...");
     // Start the server only after a successful DB connection
     app.listen(PORT, () => {
         console.log(`Server is running on http://localhost:${PORT}`);

@@ -20,7 +20,8 @@ app.use(bodyParser.json());
 
 // 
 
-
+// There is some problem in the dupllicate records found in the signup process (Some error comes).
+// To be solved later.
 app.post("/api/v1/signup", async (req , res) => {
     console.log("Signup Request Incoming");
 
@@ -65,11 +66,6 @@ app.post("/api/v1/signup", async (req , res) => {
                 },
             });
         }
-
-
-        
-                
-
     }
     catch(err){
         console.error('Error registering user:', err);
@@ -78,6 +74,12 @@ app.post("/api/v1/signup", async (req , res) => {
         });
     }
 });
+
+
+
+
+
+
 
 
 // Signin request (User will be assigned the jwt in this step and will be stored in the browser only)
@@ -125,8 +127,6 @@ app.get("api/v1/brain/share:link", async (req , res) => {
 // Call the database connection function and after that start the server.
 db()
     .then(() => {
-        console.log("Database connected successfully. Starting server...");
-
         // Start the server only after a successful DB connection
         app.listen(PORT, () => {
             console.log(`Server is running on http://localhost:${PORT}`);
