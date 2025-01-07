@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import {UserModel} from "./models/users";
 import bcrypt from "bcrypt";
 import {db} from "./Controller/dbConnection"
+import dotenv from "dotenv"
 
 
 
@@ -78,12 +79,59 @@ app.post("/api/v1/signup", async (req , res) => {
 
 
 
-
-
-
+// Getting the private key for jwt
+dotenv.config();
+const privKey = process.env.PRIVATE_KEY || "1234";
 
 // Signin request (User will be assigned the jwt in this step and will be stored in the browser only)
-app.post("api/v1/signin", async (req , res) =>{
+app.post("/api/v1/signin", async (req , res) =>{
+    console.log("Signin Request Incoming");
+
+    const {username, password} = req.body;
+
+    if(!username || !password){
+        res.status(411).json({message:"Please enter all the details"});
+    }
+
+    try{
+        // Checking for existing user
+        const updatedUserName = username.toLowerCase();
+        const existingUser = await UserModel.findOne({updatedUserName});
+        if(!existingUser){
+            res.status(401).json({message:"Username does not exist"});
+        }
+        else{
+            try {
+                // Checking for password match
+                const isMatch = await bcrypt.compare(password, existingUser.password);
+                if(!isMatch){
+                    res.status(401).json({message:"Invalid Password"});
+                }
+                else{
+                    // Generating the jwt token
+                    const token = jwt.sign({username: updatedUserName}, privKey, {expiresIn:"1h"});
+                    console.log("JWT Token generated successfully");
+
+                    res.status(201).json({
+                        message:"User logged in successfully",
+                        user: {
+                            id: existingUser._id,
+                            username: updatedUserName,
+                        },
+                        token: token
+                    });
+                }
+            }catch(err){
+                console.error("Error while checking password:", err);
+                res.status(500).json({message:"An error occurred while checking the password"});
+
+            }
+        }
+    }catch(err){
+        console.error('Error while checking user:', err);
+        res.status(500).json({message:"An error occurred while checking the user"});
+
+    }
 
 });
 

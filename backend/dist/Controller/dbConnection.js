@@ -17,7 +17,6 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const mongoURI = process.env.MONGO_URI || "";
-// "mongodb+srv://aadibirsingh:TnA5DETQdeg3IejG@cluster0.wwvkh.mongodb.net/latergram"
 const db = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield mongoose_1.default.connect(mongoURI);
