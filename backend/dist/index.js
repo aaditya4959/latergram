@@ -19,9 +19,12 @@ const users_1 = require("./models/users");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const dbConnection_1 = require("./Controller/dbConnection");
 const dotenv_1 = __importDefault(require("dotenv"));
+const checkToken_1 = __importDefault(require("./Controller/checkToken"));
+const contents_1 = require("./models/contents");
 const PORT = process.env.PORT || 8080;
 const app = (0, express_1.default)();
 app.use(body_parser_1.default.json());
+app.use(express_1.default.json());
 // 
 // There is some problem in the dupllicate records found in the signup process (Some error comes).
 // To be solved later.
@@ -96,7 +99,7 @@ app.post("/api/v1/signin", (req, res) => __awaiter(void 0, void 0, void 0, funct
                 }
                 else {
                     // Generating the jwt token
-                    const token = jsonwebtoken_1.default.sign({ username: updatedUserName }, privKey, { expiresIn: "1h" });
+                    const token = jsonwebtoken_1.default.sign({ userId: existingUser._id }, privKey, { expiresIn: "1h" }); // Carefully check that what is being signed.
                     console.log("JWT Token generated successfully");
                     res.status(200).json({
                         token: token
@@ -114,19 +117,47 @@ app.post("/api/v1/signin", (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 }));
 // content posting endpoint ( again the use of jwt)
-app.post("api/v1/content", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+/*
+So basically we will be using the jwt token for the authorization fo the user and then he will be able to post the content.
+We will make a middleware checkToken that will check the availability of the token. (Imported from another file in controllers)
+
+*/
+app.post("/api/v1/content", checkToken_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // first of all verify that the user is signed in
+    const link = req.body.link;
+    const type = req.body.type;
+    const title = req.body.title;
+    const post = new contents_1.ContentModel({
+        link: link,
+        type: type,
+        title: title,
+        //@ts-ignore
+        userId: req.userId, // Here again some error is being shown up by the typescript.
+        tags: []
+    });
+    try {
+        yield post.save();
+        console.log("Post saved successfully");
+    }
+    catch (saveErr) {
+        console.error("Error while saving Post:", saveErr);
+    }
+    // Sending a success response
+    res.status(201).json({
+        message: 'Brain Created successfully!'
+    });
 }));
 // get on content
-app.get("api/v1/content", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("api/v1/content", checkToken_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 //delete on content
-app.delete("api/v1/content:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.delete("api/v1/content:id", checkToken_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 // sharable
-app.post("api/v1/brain/share", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post("api/v1/brain/share", checkToken_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 // Getting the content of the shared link
-app.get("api/v1/brain/share:link", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("api/v1/brain/share:link", checkToken_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 // Call the database connection function and after that start the server.
 (0, dbConnection_1.db)()

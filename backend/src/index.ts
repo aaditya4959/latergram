@@ -5,6 +5,8 @@ import {UserModel} from "./models/users";
 import bcrypt from "bcrypt";
 import {db} from "./Controller/dbConnection"
 import dotenv from "dotenv"
+import checkToken from "./Controller/checkToken";
+import {ContentModel} from "./models/contents";
 
 
 
@@ -17,6 +19,7 @@ const app = express();
 
 
 app.use(bodyParser.json());
+app.use(express.json());
 
 
 // 
@@ -109,7 +112,7 @@ app.post("/api/v1/signin", async (req , res) =>{
                 }
                 else{
                     // Generating the jwt token
-                    const token = jwt.sign({username: updatedUserName}, privKey, {expiresIn:"1h"});
+                    const token = jwt.sign({userId:existingUser._id}, privKey, {expiresIn:"1h"}); // Carefully check that what is being signed.
                     console.log("JWT Token generated successfully");
 
                     res.status(200).json({
@@ -132,7 +135,42 @@ app.post("/api/v1/signin", async (req , res) =>{
 
 
 // content posting endpoint ( again the use of jwt)
-app.post("api/v1/content" , async (req,res) => {
+/*
+So basically we will be using the jwt token for the authorization fo the user and then he will be able to post the content.
+We will make a middleware checkToken that will check the availability of the token. (Imported from another file in controllers)
+
+*/
+
+
+app.post("/api/v1/content" ,checkToken, async (req,res) => {
+    // first of all verify that the user is signed in
+    const link = req.body.link;
+    const type = req.body.type;
+    const title = req.body.title;
+
+    const post = new ContentModel({
+        link: link,
+        type: type,
+        title: title,
+        //@ts-ignore
+        userId: req.userId,  // Here again some error is being shown up by the typescript.
+        tags:[]
+
+    })
+
+    try {
+        await post.save();
+        console.log("Post saved successfully");
+    } catch (saveErr) {
+        console.error("Error while saving Post:", saveErr);
+    }
+    
+
+    // Sending a success response
+    res.status(201).json({
+        message: 'Brain Created successfully!'
+    });
+    
 
 });
 
@@ -140,24 +178,24 @@ app.post("api/v1/content" , async (req,res) => {
 
 
 // get on content
-app.get("api/v1/content", async (req , res) => {
+app.get("api/v1/content", checkToken , async (req , res) => {
 
 });
 
 
 //delete on content
-app.delete("api/v1/content:id", async (req, res) => {
+app.delete("api/v1/content:id",checkToken ,async (req, res) => {
 
 });
 
 // sharable
-app.post("api/v1/brain/share" , async (req , res) => {
+app.post("api/v1/brain/share" ,checkToken ,async (req , res) => {
 
 });
 
 
 // Getting the content of the shared link
-app.get("api/v1/brain/share:link", async (req , res) => {
+app.get("api/v1/brain/share:link",checkToken ,async (req , res) => {
 
 });
 
