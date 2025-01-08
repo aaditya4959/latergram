@@ -83,7 +83,7 @@ app.post("/api/v1/signin", (req, res) => __awaiter(void 0, void 0, void 0, funct
     try {
         // Checking for existing user
         const updatedUserName = username.toLowerCase();
-        const existingUser = yield users_1.UserModel.findOne({ updatedUserName });
+        const existingUser = yield users_1.UserModel.findOne({ username: updatedUserName });
         if (!existingUser) {
             res.status(401).json({ message: "Username does not exist" });
         }
@@ -92,24 +92,18 @@ app.post("/api/v1/signin", (req, res) => __awaiter(void 0, void 0, void 0, funct
                 // Checking for password match
                 const isMatch = yield bcrypt_1.default.compare(password, existingUser.password);
                 if (!isMatch) {
-                    res.status(401).json({ message: "Invalid Password" });
+                    res.status(403).json({ message: "Invalid Password" });
                 }
                 else {
                     // Generating the jwt token
                     const token = jsonwebtoken_1.default.sign({ username: updatedUserName }, privKey, { expiresIn: "1h" });
                     console.log("JWT Token generated successfully");
-                    res.status(201).json({
-                        message: "User logged in successfully",
-                        user: {
-                            id: existingUser._id,
-                            username: updatedUserName,
-                        },
+                    res.status(200).json({
                         token: token
                     });
                 }
             }
             catch (err) {
-                console.error("Error while checking password:", err);
                 res.status(500).json({ message: "An error occurred while checking the password" });
             }
         }
