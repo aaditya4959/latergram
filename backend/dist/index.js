@@ -148,7 +148,23 @@ app.post("/api/v1/content", checkToken_1.default, (req, res) => __awaiter(void 0
     });
 }));
 // get on content
-app.get("api/v1/content", checkToken_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/api/v1/content", checkToken_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //@ts-ignore
+    const userId = req.userId;
+    try {
+        const response = yield contents_1.ContentModel.find({ userId: userId }); // this will be an array of objects.
+        // Send the array of data to the user
+        res.status(200).json({
+            "message": "Content Loaded Successfully",
+            "data": response
+        });
+    }
+    catch (err) {
+        console.log(`Error in loading content: ${err}`);
+        res.status(500).json({
+            "message": "An error occurred while loading content"
+        });
+    }
 }));
 //delete on content
 app.delete("api/v1/content:id", checkToken_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {

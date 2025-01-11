@@ -178,24 +178,41 @@ app.post("/api/v1/content" ,checkToken, async (req,res) => {
 
 
 // get on content
-app.get("api/v1/content", checkToken , async (req , res) => {
+app.get("/api/v1/content", checkToken , async (req , res) => {
+    //@ts-ignore
+    const userId = req.userId;
 
+    try{
+       const response =  await ContentModel.find({userId: userId});  // this will be an array of objects.
+
+       // Send the array of data to the user
+       res.status(200).json({
+        "message":"Content Loaded Successfully",
+        "data":response
+       })
+
+    }catch(err){
+        console.log(`Error in loading content: ${err}`);
+        res.status(500).json({
+            "message":"An error occurred while loading content"
+        })
+    }
 });
 
 
 //delete on content
-app.delete("api/v1/content:id",checkToken ,async (req, res) => {
+app.delete("/api/v1/content:id",checkToken ,async (req, res) => {
 
 });
 
 // sharable
-app.post("api/v1/brain/share" ,checkToken ,async (req , res) => {
+app.post("/api/v1/brain/share" ,checkToken ,async (req , res) => {
 
 });
 
 
 // Getting the content of the shared link
-app.get("api/v1/brain/share:link",checkToken ,async (req , res) => {
+app.get("/api/v1/brain/share:link",checkToken ,async (req , res) => {
 
 });
 
