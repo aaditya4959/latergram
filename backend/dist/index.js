@@ -167,13 +167,39 @@ app.get("/api/v1/content", checkToken_1.default, (req, res) => __awaiter(void 0,
     }
 }));
 //delete on content
-app.delete("api/v1/content:id", checkToken_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.delete("/api/v1/content", checkToken_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { contentId } = req.body;
+    if (!contentId) {
+        res.status(400).json({
+            "message": "Content ID is required"
+        });
+    }
+    else {
+        try {
+            const deletedContent = yield contents_1.ContentModel.findByIdAndDelete(contentId);
+            if (!deletedContent) {
+                res.status(404).json({
+                    "message": "Content not found"
+                });
+            }
+            else {
+                res.status(200).json({
+                    "message": "Content deleted successfully"
+                });
+            }
+        }
+        catch (err) {
+            res.status(500).json({
+                "message": "An error occurred while deleting content"
+            });
+        }
+    }
 }));
 // sharable
-app.post("api/v1/brain/share", checkToken_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post("/api/v1/brain/share", checkToken_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 // Getting the content of the shared link
-app.get("api/v1/brain/share:link", checkToken_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/api/v1/brain/share:link", checkToken_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 // Call the database connection function and after that start the server.
 (0, dbConnection_1.db)()
