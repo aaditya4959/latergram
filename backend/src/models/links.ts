@@ -4,9 +4,7 @@ import { Schema } from "mongoose";
 
 const LinkSchema = new Schema({
     hash: { type: String, required: true },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true , unique: true},
 })
 
-const LinkModel = mongoose.model('Link', LinkSchema);  // the name of the collection will be the plural of first argument.
-
-module.exports = LinkModel;
+export const LinkModel = mongoose.model('Link', LinkSchema);  // the name of the collection will be the plural of first argument.

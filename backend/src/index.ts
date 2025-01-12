@@ -7,6 +7,8 @@ import {db} from "./Controller/dbConnection"
 import dotenv from "dotenv"
 import checkToken from "./Controller/checkToken";
 import {ContentModel} from "./models/contents";
+import {LinkModel} from "./models/links"
+import { random } from "./utils";
 
 
 
@@ -231,13 +233,60 @@ app.delete("/api/v1/content",checkToken ,async (req, res) => {
 
 // sharable
 app.post("/api/v1/brain/share" ,checkToken ,async (req , res) => {
+    const share = req.body.share;
 
+    if(share){
+        await LinkModel.create({
+            //@ts-ignore
+            userId: req.userId,
+            hash: random(10),
+        })
+    }else{
+        await LinkModel.deleteOne({
+            //@ts-ignore
+            userId:req.userId
+        })
+    }
+
+    res.json({
+        "message":"Sharable Edited Successfully."
+    })
 });
 
 
 // Getting the content of the shared link
-app.get("/api/v1/brain/share:link",checkToken ,async (req , res) => {
+app.get("/api/v1/brain/share:shareLink" ,async (req , res) => { // THis endpoint does not require to be authenticated.
+    const hash = req.params.shareLink;
 
+    const links = await LinkModel.findOne({
+        hash: hash
+    })
+
+    if(!links){
+        res.status(411).json({
+            "message":"Sorry Incorrect Input"
+        })
+        return;
+    }
+
+    const content = await ContentModel.find({
+        userId: links.userId
+    })
+
+    const user = await UserModel.findOne({
+        userId: links.userId
+    })
+
+    if(!user){
+        res.json({
+            "message":"User not found (Ideally should not happen)"
+        })
+    }
+
+    res.json({
+        "user":user?.username,
+        "content": content
+    })
 });
 
 

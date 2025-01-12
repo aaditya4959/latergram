@@ -21,6 +21,8 @@ const dbConnection_1 = require("./Controller/dbConnection");
 const dotenv_1 = __importDefault(require("dotenv"));
 const checkToken_1 = __importDefault(require("./Controller/checkToken"));
 const contents_1 = require("./models/contents");
+const links_1 = require("./models/links");
+const utils_1 = require("./utils");
 const PORT = process.env.PORT || 8080;
 const app = (0, express_1.default)();
 app.use(body_parser_1.default.json());
@@ -197,6 +199,23 @@ app.delete("/api/v1/content", checkToken_1.default, (req, res) => __awaiter(void
 }));
 // sharable
 app.post("/api/v1/brain/share", checkToken_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const share = req.body.share;
+    if (share) {
+        yield links_1.LinkModel.create({
+            //@ts-ignore
+            userId: req.userId,
+            hash: (0, utils_1.random)(10),
+        });
+    }
+    else {
+        yield links_1.LinkModel.deleteOne({
+            //@ts-ignore
+            userId: req.userId
+        });
+    }
+    res.json({
+        "message": "Sharable Edited Successfully."
+    });
 }));
 // Getting the content of the shared link
 app.get("/api/v1/brain/share:link", checkToken_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
