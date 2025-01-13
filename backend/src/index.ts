@@ -255,39 +255,42 @@ app.post("/api/v1/brain/share" ,checkToken ,async (req , res) => {
 
 
 // Getting the content of the shared link
-app.get("/api/v1/brain/share:shareLink" ,async (req , res) => { // THis endpoint does not require to be authenticated.
-    const hash = req.params.shareLink;
+app.get("/api/v1/brain/share:shareLink", async (req, res) => {
+    try {
+        const hash = req.params.shareLink;
 
-    const links = await LinkModel.findOne({
-        hash: hash
-    })
+        const links = await LinkModel.findOne({ hash: hash });
 
-    if(!links){
-        res.status(411).json({
-            "message":"Sorry Incorrect Input"
-        })
-        return;
-    }
+        if (!links) {
+            res.status(411).json({
+                "message": "Sorry Incorrect Input"
+            });
+            return; // Stop execution after sending the response
+        }
 
-    const content = await ContentModel.find({
-        userId: links.userId
-    })
+        const content = await ContentModel.find({ userId: links.userId });
+        const user = await UserModel.findOne({ _id: links.userId }); // This is important.
 
-    const user = await UserModel.findOne({
-        userId: links.userId
-    })
+        if (!user) {
+            res.json({
+                "message": "User not found (Ideally should not happen)"
+            });
+            return; // Stop execution after sending the response
+        }
 
-    if(!user){
         res.json({
-            "message":"User not found (Ideally should not happen)"
-        })
+            "user": user?.username,
+            "content": content
+        });
+    } catch (err: any) {
+        // Handle unexpected errors
+        res.status(500).json({
+            "message": "An error occurred",
+            "error": err.message
+        });
     }
-
-    res.json({
-        "user":user?.username,
-        "content": content
-    })
 });
+
 
 
 

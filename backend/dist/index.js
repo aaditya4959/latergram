@@ -218,7 +218,36 @@ app.post("/api/v1/brain/share", checkToken_1.default, (req, res) => __awaiter(vo
     });
 }));
 // Getting the content of the shared link
-app.get("/api/v1/brain/share:link", checkToken_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/api/v1/brain/share:shareLink", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const hash = req.params.shareLink;
+        const links = yield links_1.LinkModel.findOne({ hash: hash });
+        if (!links) {
+            res.status(411).json({
+                "message": "Sorry Incorrect Input"
+            });
+            return; // Stop execution after sending the response
+        }
+        const content = yield contents_1.ContentModel.find({ userId: links.userId });
+        const user = yield users_1.UserModel.findOne({ _id: links.userId }); // This is important.
+        if (!user) {
+            res.json({
+                "message": "User not found (Ideally should not happen)"
+            });
+            return; // Stop execution after sending the response
+        }
+        res.json({
+            "user": user === null || user === void 0 ? void 0 : user.username,
+            "content": content
+        });
+    }
+    catch (err) {
+        // Handle unexpected errors
+        res.status(500).json({
+            "message": "An error occurred",
+            "error": err.message
+        });
+    }
 }));
 // Call the database connection function and after that start the server.
 (0, dbConnection_1.db)()
