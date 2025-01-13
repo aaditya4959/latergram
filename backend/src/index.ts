@@ -232,15 +232,29 @@ app.delete("/api/v1/content",checkToken ,async (req, res) => {
 });
 
 // sharable
-app.post("/api/v1/brain/share" ,checkToken ,async (req , res) => {
+app.post("/api/v1/brain/share" ,checkToken ,async (req , res) => {  // There is some editing required in this code.
     const share = req.body.share;
 
     if(share){
-        await LinkModel.create({
+        const foundLink = await LinkModel.find({
             //@ts-ignore
-            userId: req.userId,
-            hash: random(10),
+            userId=req.userId
         })
+
+        if(foundLink){
+            res.json({
+                "message":"The sharable link already exists."
+            })
+        }
+        else{
+
+            await LinkModel.create({
+                //@ts-ignore
+                userId: req.userId,
+                hash: random(10),
+            });
+        }
+        
     }else{
         await LinkModel.deleteOne({
             //@ts-ignore
