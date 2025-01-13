@@ -11,6 +11,8 @@ export default function Layout(){
         <main>
             <Outlet/>
         </main>
+        <br />
+        
         <Footer></Footer>
     </div>
     )
