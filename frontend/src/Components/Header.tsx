@@ -2,10 +2,14 @@ import { useState } from "react";
 import {Button} from "./Button"
 import Plus from "../Icons/Plus";
 import Share from "../Icons/Share";
+import { useRecoilState } from "recoil";
+import { modalState } from "../Atoms/modalState";
 
 export default function Header() {
     const [signedIn, setSignedIn] = useState(false);
     const [user, setUser] = useState({name:""});
+
+    const [modalOpen, setModalOpen] = useRecoilState(modalState);
 
     
 
@@ -19,7 +23,7 @@ export default function Header() {
                 <div className="flex  justify-between ">
                    
                     <Button variant="secondary" size="sm" text="Share Brain" startIcon={<Share size="sm"/>}></Button>   
-                    <Button variant="primary" size="sm" text="Add Content" startIcon={<Plus size="sm"/>}></Button>
+                    <Button variant="primary" size="sm" text="Add Content" startIcon={<Plus size="sm"/>} onClick={() => setModalOpen(true)}></Button>
                     
                 </div>
             ) : (
@@ -27,6 +31,7 @@ export default function Header() {
                     <h1>Welcome, {user.name || "User"}</h1>
                 </div>
             )}
+            
         </div>
     );
 }
