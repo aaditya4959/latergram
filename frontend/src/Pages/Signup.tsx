@@ -6,10 +6,12 @@ import { Card } from "../Components/ui/card";
 import { User, Lock } from "lucide-react";
 import axios from "axios";
 import { BACKEND_URL } from "@/config";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const usernameRef = useRef<HTMLInputElement>();
   const passwordRef = useRef<HTMLInputElement>();
+  const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -37,11 +39,15 @@ const Signup = () => {
     const password = passwordRef.current?.value;
 
     // sending the request to backend
-    await axios.post(`${BACKEND_URL}/api/v1/signup`,{
+    const response = await axios.post(`${BACKEND_URL}/api/v1/signup`,{
         username,
         password
     })
-    alert("You Have Signed Up!");
+    if(response.status == 200){
+        navigate("/signin");
+        alert("You Have Signed Up!");
+    }
+    
     
   }
 
