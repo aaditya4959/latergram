@@ -16,8 +16,6 @@ export default function Layout(){
         </main>
         <br />
         
-        <Dashboard/>
-        
     </div>
     )
     

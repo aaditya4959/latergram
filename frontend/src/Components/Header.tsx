@@ -1,13 +1,18 @@
-import { useState } from "react";
+
 import {Button} from "./Button"
 import Plus from "../Icons/Plus";
 import Share from "../Icons/Share";
 import { useRecoilState } from "recoil";
 import { modalState } from "../Atoms/modalState";
+import {userSignedIn} from "../Atoms/userSignedIn"
+import { useState } from "react";
+import Start from "@/Icons/Start";
 
 export default function Header() {
-    const [signedIn, setSignedIn] = useState(false);
-    const [user, setUser] = useState({name:""});
+    
+    const [signedIn, ] = useRecoilState(userSignedIn);
+    const [user,setUser] = useState({});
+    
 
     const [modalOpen, setModalOpen] = useRecoilState(modalState);
 
@@ -18,7 +23,7 @@ export default function Header() {
             <h2>LaterGram</h2>
 
             {/* Conditional Rendering */}
-            {!signedIn ? (
+            {signedIn ? (
                 
                 <div className="flex  justify-between ">
                    
@@ -28,7 +33,7 @@ export default function Header() {
                 </div>
             ) : (
                 <div>
-                    <h1>Welcome, {user.name || "User"}</h1>
+                    <Button variant="primary" size="sm" text="Get Started" startIcon={<Start size="sm"/>}></Button>
                 </div>
             )}
             
