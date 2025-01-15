@@ -23,10 +23,12 @@ const checkToken_1 = __importDefault(require("./Controller/checkToken"));
 const contents_1 = require("./models/contents");
 const links_1 = require("./models/links");
 const utils_1 = require("./utils");
+const cors_1 = __importDefault(require("cors"));
 const PORT = process.env.PORT || 8080;
 const app = (0, express_1.default)();
 app.use(body_parser_1.default.json());
 app.use(express_1.default.json());
+app.use((0, cors_1.default)()); // For cross origin resourcs sharing.
 // 
 // There is some problem in the dupllicate records found in the signup process (Some error comes).
 // To be solved later.
@@ -201,11 +203,22 @@ app.delete("/api/v1/content", checkToken_1.default, (req, res) => __awaiter(void
 app.post("/api/v1/brain/share", checkToken_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const share = req.body.share;
     if (share) {
-        yield links_1.LinkModel.create({
+        const foundLink = yield links_1.LinkModel.find({
             //@ts-ignore
-            userId: req.userId,
-            hash: (0, utils_1.random)(10),
+            userId: req.userId
         });
+        if (foundLink) {
+            res.json({
+                "message": "The sharable link already exists."
+            });
+        }
+        else {
+            yield links_1.LinkModel.create({
+                //@ts-ignore
+                userId: req.userId,
+                hash: (0, utils_1.random)(10),
+            });
+        }
     }
     else {
         yield links_1.LinkModel.deleteOne({

@@ -1,19 +1,21 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "../Components/ui/button";
 import { Input } from "../Components/ui/input";
 import { useToast } from "../hooks/use-toast";
 import { Card } from "../Components/ui/card";
 import { User, Lock } from "lucide-react";
+import axios from "axios";
+import { BACKEND_URL } from "@/config";
 
 const Signup = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const usernameRef = useRef<HTMLInputElement>();
+  const passwordRef = useRef<HTMLInputElement>();
   const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!username || !password) {
+    if (!usernameRef.current || !passwordRef.current) {
       toast({
         variant: "destructive",
         title: "Error",
@@ -26,11 +28,22 @@ const Signup = () => {
       title: "Success!",
       description: "Account created successfully",
     });
-
-    // Reset form
-    setUsername("");
-    setPassword("");
   };
+
+
+  // signin function for backend request
+  async function signup(){
+    const username = usernameRef.current?.value;
+    const password = passwordRef.current?.value;
+
+    // sending the request to backend
+    await axios.post(`${BACKEND_URL}/api/v1/signup`,{
+        username,
+        password
+    })
+    alert("You Have Signed Up!");
+    
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
@@ -45,10 +58,12 @@ const Signup = () => {
             <div className="relative">
               <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
               <Input
+              
                 type="text"
                 placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                // value={usernameRef.current}
+                //@ts-ignore
+                ref={usernameRef}
                 className="pl-10"
               />
             </div>
@@ -58,8 +73,9 @@ const Signup = () => {
               <Input
                 type="password"
                 placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                // value={passwordRef.current}
+                //@ts-ignore
+                ref={passwordRef}
                 className="pl-10"
               />
             </div>
@@ -68,6 +84,7 @@ const Signup = () => {
           <Button 
             type="submit" 
             className="w-full bg-gray-900 hover:bg-gray-800 text-white"
+            onClick={signup}
           >
             Sign Up
           </Button>

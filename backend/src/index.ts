@@ -9,6 +9,7 @@ import checkToken from "./Controller/checkToken";
 import {ContentModel} from "./models/contents";
 import {LinkModel} from "./models/links"
 import { random } from "./utils";
+import cors from "cors";
 
 
 
@@ -22,7 +23,7 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(express.json());
-
+app.use(cors());  // For cross origin resourcs sharing.
 
 // 
 
@@ -238,7 +239,7 @@ app.post("/api/v1/brain/share" ,checkToken ,async (req , res) => {  // There is 
     if(share){
         const foundLink = await LinkModel.find({
             //@ts-ignore
-            userId=req.userId
+            userId:req.userId
         })
 
         if(foundLink){
