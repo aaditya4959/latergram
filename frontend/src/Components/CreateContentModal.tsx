@@ -24,7 +24,7 @@ export default function CreateContentModal(props: ModalProps){
                     <div className="relative flex flex-col justify-center bg-blue-600 p-4 rounded shadow-md">
                         <span className="flex flex-row justify-between items-center text-white font-medium">
                             <span className="mr-4">Create Content</span>
-                            <div className="felx justify-end" onClick={() => setModalOpen(false)}>
+                            <div className="felx justify-end cursor-pointer" onClick={() => setModalOpen(false)}>
                                 
                                 <Cross size="md"/>
                             </div>

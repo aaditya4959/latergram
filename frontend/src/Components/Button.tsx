@@ -7,11 +7,13 @@ export interface ButtonProps {
     startIcon?: ReactElement;  // We need to handle this type
     endIcon?: ReactElement; // THis also
     onClick?: () => void;
+    loading?: boolean;
+
 }
 
 export const Button = (props: ButtonProps) => {
 
-    const {variant, size, text, startIcon, endIcon, onClick} = props;
+    const {variant, size, text, startIcon, endIcon, onClick, loading} = props;
 
     const baseClasses = "flex items-center justify-center font-medium rounded focus:outline-none mx-2";
 
@@ -31,7 +33,7 @@ export const Button = (props: ButtonProps) => {
         // Now we will try to code this generic button according to the different types of the interface.
         
         <button
-        className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]}`}
+        className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]}` + loading? " opacity-45" :""}
         onClick={onClick}
         >
             {startIcon && <span className="mr-2">{startIcon}</span>}

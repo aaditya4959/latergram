@@ -1,7 +1,9 @@
 // import React from "react";
 import { Outlet } from "react-router-dom";
 import Header from "./Components/Header";
-import Footer from "./Components/Footer";
+import Dashboard from "./Pages/Dashboard";
+import Signup from "./Pages/Signup";
+import Signin from "./Pages/Signin";
 
 export default function Layout(){
 
@@ -9,11 +11,13 @@ export default function Layout(){
         <div>
         <Header></Header>
         <main>
+            
             <Outlet/>
         </main>
         <br />
         
-        <Footer></Footer>
+        <Dashboard/>
+        
     </div>
     )
     
