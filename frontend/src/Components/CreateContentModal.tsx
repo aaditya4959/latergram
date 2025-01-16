@@ -3,14 +3,48 @@ import { Cross } from "../Icons/Cross";
 import { Button } from "./Button";
 import Input from "./Input";
 import { modalState } from "../Atoms/modalState";
+import { useRef } from "react";
+import axios from "axios";
+import { BACKEND_URL } from "@/config";
 
 
-interface ModalProps{
-    open: boolean;
-}
 
-export default function CreateContentModal(props: ModalProps){
+
+export default function CreateContentModal(){
+
+    const titleRef = useRef<HTMLInputElement>(null);
+    const linkRef = useRef<HTMLInputElement>(null);
+    const typeRef = useRef<HTMLInputElement>(null);
     
+
+    async function postContent(){
+        const title = titleRef.current?.value;
+        const link = linkRef.current?.value;
+        const type = typeRef.current?.value;
+
+        const token = localStorage.getItem("token");
+
+        if(title && link && type){
+            try{
+                await axios.post(`${BACKEND_URL}/api/v1/content`, 
+                    { title, link, type }, // Data
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+                alert("Content created successfully!");
+                setModalOpen(false);
+                // Improvement needed here.
+            }catch(err){
+                console.log(`Err in posting content ${err}`);
+            }
+            
+        }else{
+            alert("Please fill all the fields");
+        }
+    }
     
     const [modalOpen, setModalOpen ] = useRecoilState(modalState);
     return(
@@ -31,12 +65,15 @@ export default function CreateContentModal(props: ModalProps){
                             
                         </span>
                         <div className="flex flex-col justify-center ">
-                                <Input placeHolder="Title"/>
-                                <Input placeHolder="Link"/>
-                                <Input placeHolder="Tags" />
+                                <Input placeHolder="Title" ref={titleRef}/>
+                                <Input placeHolder="Link" ref={linkRef}/>
+                                <Input placeHolder="Type" ref={typeRef}/>
                                 <br />
 
-                                <Button variant="secondary" size="lg" text="Create"/>
+                                <Button onClick={() => {
+                                    postContent();
+                                    setModalOpen(false);
+                                }} variant="secondary" size="lg" text="Create"/>
 
                         </div>
                     </div>

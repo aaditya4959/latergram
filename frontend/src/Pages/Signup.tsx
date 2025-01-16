@@ -43,7 +43,7 @@ const Signup = () => {
         username,
         password
     })
-    if(response.status == 200){
+    if(response.status == 200){  // bit of changes here.
         navigate("/signin");
         alert("You Have Signed Up!");
     }
