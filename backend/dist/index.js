@@ -156,11 +156,10 @@ app.get("/api/v1/content", checkToken_1.default, (req, res) => __awaiter(void 0,
     //@ts-ignore
     const userId = req.userId;
     try {
-        const response = yield contents_1.ContentModel.find({ userId: userId }); // this will be an array of objects.
+        const content = yield contents_1.ContentModel.find({ userId: userId }); // this will be an array of objects.
         // Send the array of data to the user
         res.status(200).json({
-            "message": "Content Loaded Successfully",
-            "data": response
+            content
         });
     }
     catch (err) {

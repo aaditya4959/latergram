@@ -186,12 +186,11 @@ app.get("/api/v1/content", checkToken , async (req , res) => {
     const userId = req.userId;
 
     try{
-       const response =  await ContentModel.find({userId: userId});  // this will be an array of objects.
+       const content =  await ContentModel.find({userId: userId});  // this will be an array of objects.
 
        // Send the array of data to the user
        res.status(200).json({
-        "message":"Content Loaded Successfully",
-        "data":response
+        content
        })
 
     }catch(err){
