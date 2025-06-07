@@ -1,0 +1,34 @@
+{
+    "Information":[
+        {
+            "id":1,
+            "title" : "One-Click Saving",
+            "description":"Save tweets and YouTube videos instantly with our browser extension or mobile app. No more losing valuable content in the endless scroll."
+        },
+        {
+            "id":2,
+            "title": "AI-Powered Search",
+            "description": "Find exactly what you're looking for with intelligent RAG-based querying. Ask questions in natural language and get precise results."
+        },
+        {
+            "id":3,
+            "title": "Read When Ready",
+            "description": "Access your saved content anytime, anywhere. Perfect for those moments when you have time to dive deep into interesting topics."
+        },
+        {
+            "id":4,
+            "title": "Lightning Fast",
+            "description": "Our optimized platform ensures your content loads instantly, so you can focus on learning rather than waiting."
+        },
+        {
+            "id":5,
+            "title": "Secure & Private",
+            "description": "Your saved content is encrypted and private. We respect your data and never share it with third parties."
+        },
+        {
+            "id":6,
+            "title": "Cross-Platform",
+            "description": "Access your content from any device. Seamless sync across desktop, mobile, and tablet for ultimate convenience."
+        }
+    ]
+}
