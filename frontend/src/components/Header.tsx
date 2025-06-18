@@ -12,6 +12,7 @@ export default function Header() {
     navigate("/");
   };
 
+  // The get started button should be configured correcttly here.
   return (
     <div className="flex flex-row justify-around text-center items-center bg-[#11182a] h-20 w-full p-4 font-mono">
       {/* The name of the application */}
@@ -42,9 +43,9 @@ export default function Header() {
           </ul>
         ) : (
           <ul className="text-white flex flex-row justify-between items-center">
-            <li><Link to="/dashboard">SignIn</Link></li>
+            <li><Link to="/signin">SignIn</Link></li>
             <li className="bg-[#267beb] p-2 rounded-md">
-              <Link to="/get-started">Get Started</Link>
+              <Link to="/get-started">Get Started</Link>. 
             </li>
           </ul>
         )}

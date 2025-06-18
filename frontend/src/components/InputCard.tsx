@@ -1,21 +1,32 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 
 export default function InputCard() {
   const [formData, setFormData] = useState({
     url: '',
     title: '',
+    type: '',
     description: '',
     tags: '',
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> ) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData); // Replace with actual save logic
+    // Here we have to update the logic to send the form Data to the backend
+    axios.post("http://localhost:8080/api/v1/content" , {
+      link: formData.url,
+      type: formData.type,
+      title: formData.title
+    },{
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    })
   };
 
   return (
@@ -32,10 +43,12 @@ export default function InputCard() {
           <select
             className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             defaultValue="Twitter/X Post"
+            name='type'
+            onChange={handleChange}
           >
             <option>Twitter/X Post</option>
-            <option>Blog</option>
-            <option>YouTube Video</option>
+            <option>Youtube Video</option>
+            <option>Custom</option>
           </select>
         </div>
 
