@@ -7,7 +7,7 @@ import Youtube from "../assets/icons/Youtube";
 interface PostCardProps {
     type: "youtube" | "twitter" ;
     title: string;
-    description: string;
+    description?: string | "";
     link: string;
 }
 
@@ -16,6 +16,10 @@ interface PostCardProps {
 export default function PostCard (props : PostCardProps) {
 
     const {type, title, description,link } = props;
+
+    const handleDelete = () => {
+        
+    }
 
     return (
         <div className="flex flex-col justify-around items-start text-start min-w-3/5 p-4  bg-white shadow-md border border-gray-200 rounded-lg font-mono">
@@ -38,6 +42,7 @@ export default function PostCard (props : PostCardProps) {
                     >
                         <GoTo size="md" color="secondary" />
                     </a>
+
                     <Trash size="md" color="danger"/>
 
                 </div>

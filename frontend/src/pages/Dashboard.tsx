@@ -1,5 +1,6 @@
 
 
+import { useEffect, useState } from "react";
 import Calender from "../assets/icons/Calender";
 import Hike from "../assets/icons/Hike";
 import Twitter from "../assets/icons/Twitter";
@@ -12,7 +13,34 @@ import PostCard from "../components/PostCard";
 
 export default function Dashboard () {
 
-    
+    type Post = {
+       
+        type: "youtube"|"twitter";
+        title: string;
+        description: string;
+        link: string;
+        };
+
+    const [posts, setPosts] = useState<Post[]>([]);
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            try {
+                const res = await fetch("http://localhost:8080/api/v1/content", {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`, // Include if using token auth
+                    },
+                });
+                const data = await res.json();
+                setPosts(data.content);
+            } catch (err) {
+                console.error("Error fetching content:", err);
+            }
+        };
+        fetchPosts(); // Initial fetch when component mounts
+        const interval = setInterval(fetchPosts, 5000);
+        return () => clearInterval(interval); // Cleanup on unmount
+    },[])
 
     return (
         <>
@@ -44,8 +72,15 @@ export default function Dashboard () {
 
                         {/* Right sub division the shadow in here will be removed just for dev purpose only */}
                         <div className="flex flex-col w-3/5  justify-start items-center text-center   bg-white  rounded-lg font-mono overflow-y-scroll gap-4">
-                            <PostCard type="youtube" title="Web Dev Course" description="This is the best web development course a person can see in their whole life." link="sdjkhfashdfjk"/>
-                            <PostCard type="twitter" title="Musk pisses Trump" description="What the hell is wrong going on between Elon Musk and President Donald Trump." link="sdjkhfashdfjk"/>
+                            {posts.map((post, ) => (
+                                <PostCard
+                                    
+                                    type={post.type}
+                                    title={post.title}
+                                    description={post.description}
+                                    link={post.link}
+                                />
+                            ))}
                         </div>
                     </div>
             </div>
