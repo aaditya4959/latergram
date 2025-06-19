@@ -15,13 +15,27 @@ export default function Dashboard () {
 
     type Post = {
        
-        type: "youtube"|"twitter";
+        type: "Youtube Video"|"Twitter/X Post";
         title: string;
         description: string;
         link: string;
         };
 
     const [posts, setPosts] = useState<Post[]>([]);
+
+    const countPost = () => {
+        return posts.length;
+    }
+
+    const countTwitterPosts = () => {
+        return posts.filter(post => post.type === "Twitter/X Post").length;
+    }
+
+    const countYoutubePosts = () => {
+        return posts.filter(post => post.type === "Youtube Video").length;
+    }
+
+
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -56,10 +70,10 @@ export default function Dashboard () {
 
                     {/* Analytics Division  */}
                     <div className="flex flex-row w-7/8 h-[175px] bg-gradient-to-r from-[#72a2f4] to-[#b787fe] p-4 m-2 shadow-lg justify-around items-center text-center rounded-2xl">
-                        <AnalCard title="Total Saved" icon={<Calender size="lg" color="primary"/>} count={5}/>
-                        <AnalCard title="Twitter Posts" icon={<Twitter size="lg" color="twitter"/>} count={3}/>
-                        <AnalCard title="Youtube Videos" icon={<Youtube size="lg" color="youtube"/>} count={2}/>
-                        <AnalCard title="This Week" icon={<Hike size="lg" color="success"/>} count={0}/>
+                        <AnalCard title="Total Saved" icon={<Calender size="lg" color="primary"/>} count={countPost()}/>
+                        <AnalCard title="Twitter Posts" icon={<Twitter size="lg" color="twitter"/>} count={countTwitterPosts()}/>
+                        <AnalCard title="Youtube Videos" icon={<Youtube size="lg" color="youtube"/>} count={countYoutubePosts()}/>
+                        {/* <AnalCard title="This Week" icon={<Hike size="lg" color="success"/>} count={0}/>  This will be added once the date wise filtering is implemented*/}
                     </div>
 
 
@@ -71,8 +85,8 @@ export default function Dashboard () {
                         </div>
 
                         {/* Right sub division the shadow in here will be removed just for dev purpose only */}
-                        <div className="flex flex-col w-3/5  justify-start items-center text-center   bg-white  rounded-lg font-mono overflow-y-scroll gap-4">
-                            {posts.map((post, ) => (
+                        <div className="flex flex-col w-4/5  justify-start items-center text-center   bg-white  rounded-lg font-mono overflow-y-scroll gap-4 mx-2">
+                            {posts.slice().reverse().map((post) => (
                                 <PostCard
                                     
                                     type={post.type}
