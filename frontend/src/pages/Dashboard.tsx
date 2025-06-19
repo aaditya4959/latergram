@@ -1,4 +1,5 @@
 
+
 import Calender from "../assets/icons/Calender";
 import Hike from "../assets/icons/Hike";
 import Twitter from "../assets/icons/Twitter";
@@ -8,7 +9,11 @@ import Header from "../components/Header";
 import InputCard from "../components/InputCard";
 import PostCard from "../components/PostCard";
 
+
 export default function Dashboard () {
+
+    
+
     return (
         <>
             <Header/>

@@ -1,5 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { useAuthStore } from "../stores/authStore";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -7,6 +9,11 @@ import React, { useState } from "react";
 
 
 export default function Authentication (){
+
+    const navigate = useNavigate();
+
+    const signIn = useAuthStore((state) => state.signIn);
+    
 
     const [authData, setAuthData] = useState({
         username:'',
@@ -26,9 +33,22 @@ export default function Authentication (){
             password: authData.password
         })
         .then((response) => {
+            // extract data from the rsponse
+            const {user, token} = response.data;
+
             console.log("Backend Response: ", response.data);
             // Here we will get a jwt token as response and we have to store it into the local storage
-            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('token', token);
+
+            signIn(user);  // Changing in the zustand store
+
+            navigate("/dashboard");
+
+            
+            
+        }).catch((err) => {
+            console.error("Authentication failed:", err);
+            alert("Invalid credentials. Please try again.");
         })
     }
 

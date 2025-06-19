@@ -17,11 +17,14 @@ export default function InputCard() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Form Data Submitted:", formData);
     // Here we have to update the logic to send the form Data to the backend
     axios.post("http://localhost:8080/api/v1/content" , {
       link: formData.url,
       type: formData.type,
-      title: formData.title
+      title: formData.title,
+      description: formData.description,
+      tags: formData.tags.split(',').map(tag => tag.trim()), // Convert tags to array
     },{
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -80,7 +83,7 @@ export default function InputCard() {
 
         {/* Description */}
         <div className="flex flex-col items-start w-full">
-          <label className="text-sm font-medium text-gray-700 mb-1">Description (Optional)</label>
+          <label className="text-sm font-medium text-gray-700 mb-1">Description</label>
           <textarea
             name="description"
             placeholder="Add a brief description of what this content is about"
@@ -93,7 +96,7 @@ export default function InputCard() {
 
         {/* Tags */}
         <div className="flex flex-col items-start w-full">
-          <label className="text-sm font-medium text-gray-700 mb-1">Tags (Optional)</label>
+          <label className="text-sm font-medium text-gray-700 mb-1">Tags</label>
           <input
             type="text"
             name="tags"

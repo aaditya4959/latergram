@@ -30,7 +30,14 @@ export default function PostCard (props : PostCardProps) {
                 </div>
                 <div className="flex flex-row justify-between items-center text-center gap-2">
 
-                    <GoTo size="md" color="secondary"/>
+                    <a
+                        href={link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:scale-110 transition"
+                    >
+                        <GoTo size="md" color="secondary" />
+                    </a>
                     <Trash size="md" color="danger"/>
 
                 </div>
