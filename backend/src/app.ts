@@ -8,8 +8,10 @@ import dotenv from "dotenv"
 import checkToken from "./Controller/checkToken";
 import {ContentModel} from "./models/content";
 import {LinkModel} from "./models/links"
+import {TagModel} from "./models/tags"
 import { random } from "./utils";
 import cors from "cors";
+import mongoose from "mongoose";
 
 
 
@@ -119,7 +121,11 @@ app.post("/api/v1/signin", async (req , res) =>{
                     console.log("JWT Token generated successfully");
 
                     res.status(200).json({
-                        token: token
+                        token: token,
+                        user: {
+                            username,
+                            password
+                        }
                     });
                 }
             }catch(err){
@@ -144,61 +150,55 @@ We will make a middleware checkToken that will check the availability of the tok
 
 */
 
-
+//@ts-ignore ( Some ts error in req and res cycle)
 app.post("/api/v1/content" ,checkToken, async (req,res) => {
-    // first of all verify that the user is signed in
-    const link = req.body.link;
-    const type = req.body.type;
-    const title = req.body.title;
+    console.log(req.body);
+    const { link, type, title, description, tags: rawTags } = req.body;
 
+  try {
+    // Step 1: Ensure tags are an array of strings
+    const tagTitles = Array.isArray(rawTags)
+      ? rawTags
+      : typeof rawTags === "string"
+      ? rawTags.split(",").map(t => t.trim())
+      : [];
+
+    // Step 2: Convert tag titles to ObjectIds (create if missing)
+    const tagIds: mongoose.Types.ObjectId[] = [];
+
+    for (const title of tagTitles) {
+        let tagDoc = await TagModel.findOne({ title });
+
+        if (!tagDoc) {
+            const newTag = new TagModel({ title });
+            tagDoc = await newTag.save(); // ✅ Reassign to get _id
+        }
+
+        if (tagDoc) {
+            tagIds.push(tagDoc._id);
+        }
+    }
+
+
+    // Step 3: Create and save content
     const post = new ContentModel({
-        link: link,
-        type: type,
-        title: title,
-        //@ts-ignore
-        userId: req.userId,  // Here again some error is being shown up by the typescript.
-        tags:[]
-
-    })
-
-    try {
-        await post.save();
-        console.log("Post saved successfully");
-    } catch (saveErr) {
-        console.error("Error while saving Post:", saveErr);
-    }
-    
-
-    // Sending a success response
-    res.status(201).json({
-        message: 'Brain Created successfully!'
+      link,
+      type,
+      title,
+      description,
+      //@ts-ignore
+      userId: req.userId, // @ts-ignore as needed
+      tags: tagIds,
     });
-    
 
-});
+    await post.save();
+    console.log("Post saved successfully");
 
-
-
-
-// get on content
-app.get("/api/v1/content", checkToken , async (req , res) => {
-    //@ts-ignore
-    const userId = req.userId;
-
-    try{
-       const content =  await ContentModel.find({userId: userId});  // this will be an array of objects.
-
-       // Send the array of data to the user
-       res.status(200).json({
-        content
-       })
-
-    }catch(err){
-        console.log(`Error in loading content: ${err}`);
-        res.status(500).json({
-            "message":"An error occurred while loading content"
-        })
-    }
+    return res.status(201).json({ message: "Content saved successfully!" });
+  } catch (error) {
+    console.error("Error saving content:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 
