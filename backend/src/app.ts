@@ -202,6 +202,28 @@ app.post("/api/v1/content" ,checkToken, async (req,res) => {
 });
 
 
+// get on content
+app.get("/api/v1/content", checkToken , async (req , res) => {
+    //@ts-ignore
+    const userId = req.userId;
+
+    try{
+       const content =  await ContentModel.find({userId: userId});  // this will be an array of objects.
+
+       // Send the array of data to the user
+       res.status(200).json({
+        content
+       })
+
+    }catch(err){
+        console.log(`Error in loading content: ${err}`);
+        res.status(500).json({
+            "message":"An error occurred while loading content"
+        })
+    }
+});
+
+
 //delete on content
 app.delete("/api/v1/content",checkToken ,async (req, res) => {
     const {contentId} = req.body;
