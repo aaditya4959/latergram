@@ -2,6 +2,7 @@ import GoTo from "../assets/icons/GoTo";
 import Trash from "../assets/icons/Trash";
 import Twitter from "../assets/icons/Twitter";
 import Youtube from "../assets/icons/Youtube";
+import axios from "axios";
 
 
 interface PostCardProps {
@@ -9,17 +10,33 @@ interface PostCardProps {
     title: string;
     description?: string | "";
     link: string;
+    id: string;
 }
 
 
 
 export default function PostCard (props : PostCardProps) {
 
-    const {type, title, description,link } = props;
+    const {type, title, description,link, id } = props;
 
-    const handleDelete = () => {
-        
-    }
+    const handleDelete = async () => {
+        const response = await axios.delete("http://localhost:8080/api/v1/content",{
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`, // Include if using token auth
+            },
+            data: {
+                contentId: id
+            }
+
+        });
+        if (response.status === 200) {
+            console.log("Content deleted successfully");
+            // Optionally, you can update the state to remove the deleted post from the UI
+        }
+        else {  
+            console.error("Failed to delete content");
+        }
+    };
 
     return (
         <div className="flex flex-col justify-around items-start text-start min-w-full p-4  bg-white shadow-md border border-gray-200 rounded-lg font-mono">
@@ -43,7 +60,9 @@ export default function PostCard (props : PostCardProps) {
                         <GoTo size="md" color="secondary" />
                     </a>
 
-                    <Trash size="md" color="danger"/>
+                    <div onClick={handleDelete} className="cursor-pointer hover:scale-110 transition">
+                        <Trash size="md" color="danger" />
+                    </div>
 
                 </div>
 

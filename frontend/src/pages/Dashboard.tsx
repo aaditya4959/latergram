@@ -19,6 +19,7 @@ export default function Dashboard () {
         title: string;
         description: string;
         link: string;
+        _id: string;
         };
 
     const [posts, setPosts] = useState<Post[]>([]);
@@ -88,7 +89,7 @@ export default function Dashboard () {
                         <div className="flex flex-col w-4/5  justify-start items-center text-center   bg-white  rounded-lg font-mono overflow-y-scroll gap-4 mx-2">
                             {posts.slice().reverse().map((post) => (
                                 <PostCard
-                                    
+                                    id={post._id} // Assuming _id is the identifier for each post
                                     type={post.type}
                                     title={post.title}
                                     description={post.description}
