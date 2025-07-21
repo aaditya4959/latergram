@@ -17,11 +17,11 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const users_1 = require("./models/users");
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const dbConnection_1 = require("./Controller/dbConnection");
 const dotenv_1 = __importDefault(require("dotenv"));
 const checkToken_1 = __importDefault(require("./Controller/checkToken"));
 const content_1 = require("./models/content");
 const links_1 = require("./models/links");
+const tags_1 = require("./models/tags");
 const utils_1 = require("./utils");
 const cors_1 = __importDefault(require("cors"));
 const PORT = process.env.PORT || 8080;
@@ -106,7 +106,11 @@ app.post("/api/v1/signin", (req, res) => __awaiter(void 0, void 0, void 0, funct
                     const token = jsonwebtoken_1.default.sign({ userId: existingUser._id }, privKey, { expiresIn: "1h" }); // Carefully check that what is being signed.
                     console.log("JWT Token generated successfully");
                     res.status(200).json({
-                        token: token
+                        token: token,
+                        user: {
+                            username,
+                            password
+                        }
                     });
                 }
             }
@@ -126,30 +130,47 @@ So basically we will be using the jwt token for the authorization fo the user an
 We will make a middleware checkToken that will check the availability of the token. (Imported from another file in controllers)
 
 */
+//@ts-ignore ( Some ts error in req and res cycle)
 app.post("/api/v1/content", checkToken_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // first of all verify that the user is signed in
-    const link = req.body.link;
-    const type = req.body.type;
-    const title = req.body.title;
-    const post = new content_1.ContentModel({
-        link: link,
-        type: type,
-        title: title,
-        //@ts-ignore
-        userId: req.userId, // Here again some error is being shown up by the typescript.
-        tags: []
-    });
+    console.log(req.body);
+    const { link, type, title, description, tags: rawTags } = req.body;
     try {
+        // Step 1: Ensure tags are an array of strings
+        const tagTitles = Array.isArray(rawTags)
+            ? rawTags
+            : typeof rawTags === "string"
+                ? rawTags.split(",").map(t => t.trim())
+                : [];
+        // Step 2: Convert tag titles to ObjectIds (create if missing)
+        const tagIds = [];
+        for (const title of tagTitles) {
+            let tagDoc = yield tags_1.TagModel.findOne({ title });
+            if (!tagDoc) {
+                const newTag = new tags_1.TagModel({ title });
+                tagDoc = yield newTag.save(); // ✅ Reassign to get _id
+            }
+            if (tagDoc) {
+                tagIds.push(tagDoc._id);
+            }
+        }
+        // Step 3: Create and save content
+        const post = new content_1.ContentModel({
+            link,
+            type,
+            title,
+            description,
+            //@ts-ignore
+            userId: req.userId, // @ts-ignore as needed
+            tags: tagIds,
+        });
         yield post.save();
         console.log("Post saved successfully");
+        return res.status(201).json({ message: "Content saved successfully!" });
     }
-    catch (saveErr) {
-        console.error("Error while saving Post:", saveErr);
+    catch (error) {
+        console.error("Error saving content:", error);
+        return res.status(500).json({ message: "Internal server error" });
     }
-    // Sending a success response
-    res.status(201).json({
-        message: 'Brain Created successfully!'
-    });
 }));
 // get on content
 app.get("/api/v1/content", checkToken_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -261,14 +282,4 @@ app.get("/api/v1/brain/share:shareLink", (req, res) => __awaiter(void 0, void 0,
         });
     }
 }));
-// Call the database connection function and after that start the server.
-(0, dbConnection_1.db)()
-    .then(() => {
-    // Start the server only after a successful DB connection
-    app.listen(PORT, () => {
-        console.log(`Server is running on http://localhost:${PORT}`);
-    });
-})
-    .catch((err) => {
-    console.error("Failed to connect to the database:", err);
-});
+exports.default = app;

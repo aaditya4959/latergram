@@ -330,17 +330,8 @@ app.get("/api/v1/brain/share:shareLink", async (req, res) => {
 
 
 
+export default app;
 
 
 
-// Call the database connection function and after that start the server.
-db()
-    .then(() => {
-        // Start the server only after a successful DB connection
-        app.listen(PORT, () => {
-            console.log(`Server is running on http://localhost:${PORT}`);
-        });
-    })
-    .catch((err) => {
-        console.error("Failed to connect to the database:", err);
-    });
+
