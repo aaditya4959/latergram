@@ -24,9 +24,7 @@ export default function Authentication (){
             password: authData.password
         }
         console.log(userData);
-        axios.post(`api/v1/signin`, {
-            userData
-        })
+        axios.post(`api/v1/signin`, userData)
         .then((response) => {
             const {user, token} = response.data;
             localStorage.setItem('token', token);
