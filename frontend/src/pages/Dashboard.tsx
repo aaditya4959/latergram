@@ -10,7 +10,8 @@ import Header from "../components/Header";
 import InputCard from "../components/InputCard";
 import PostCard from "../components/PostCard";
 //@ts-ignore
-const IP_ADDRESS = process.env.REACT_APP_BACKEND_IP;
+const IP_ADDRESS = import.meta.env.VITE_REACT_APP_BACKEND_IP || process.env.REACT_APP_BACKEND_IP;
+
 
 export default function Dashboard () {
     type Post = {

@@ -1,7 +1,8 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 //@ts-ignore
-const IP_ADDRESS = process.env.REACT_APP_BACKEND_IP;
+const IP_ADDRESS = import.meta.env.VITE_REACT_APP_BACKEND_IP || process.env.REACT_APP_BACKEND_IP;
+
 
 export default function InputCard() {
   const [formData, setFormData] = useState({
