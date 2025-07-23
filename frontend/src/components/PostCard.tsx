@@ -5,7 +5,7 @@ import Youtube from "../assets/icons/Youtube";
 import axios from "axios";
 import React, { useEffect, useRef } from "react";
 //@ts-ignore
-const IP_ADDRESS = process.env.BACKEND_IP;
+const IP_ADDRESS = process.env.REACT_APP_BACKEND_IP;
 
 interface PostCardProps {
     type: "Youtube Video" | "Twitter/X Post" ;

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useAuthStore } from "../stores/authStore";
 import { useNavigate } from "react-router-dom";
 //@ts-ignore
-const IP_ADDRESS = process.env.BACKEND_IP;
+const IP_ADDRESS = process.env.REACT_APP_BACKEND_IP;
 
 export default function Authentication (){
     const navigate = useNavigate();
