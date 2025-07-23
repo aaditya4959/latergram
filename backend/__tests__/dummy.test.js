@@ -1,6 +1,5 @@
-import axios from 'axios';
-import { expect, jest } from '@jest/globals';
-import { suite } from 'node:test';
+const axios = require('axios');
+const {expect, jest} = require("@jest/globals");
 
 test('adds 1 + 1 to equal 2', () => {
   expect(1 + 1).toBe(2);
@@ -14,7 +13,7 @@ test('Sign-Up should work in the backend' ,async () => {
       password : 'password' + randomNumber,
     }
 
-    const response = await axios.posy("http://localhost:8080/api/v1/signup", user);
+    const response = await axios.post("http://localhost:8080/api/v1/signup", user);
 
     expect([201, 409]).toContain(response.status);
 })
