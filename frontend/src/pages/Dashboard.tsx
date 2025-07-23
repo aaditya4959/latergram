@@ -31,7 +31,7 @@ export default function Dashboard () {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const res = await fetch(`${IP_ADDRESS}/api/v1/content`, {
+                const res = await fetch(`api/v1/content`, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                     },

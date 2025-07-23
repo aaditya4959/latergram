@@ -24,7 +24,7 @@ export default function Authentication (){
             password: authData.password
         }
         console.log(userData);
-        axios.post(`${IP_ADDRESS}/api/v1/signin`, {
+        axios.post(`api/v1/signin`, {
             userData
         })
         .then((response) => {

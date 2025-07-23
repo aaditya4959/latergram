@@ -22,7 +22,7 @@ export default function Signup() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        axios.post(`${IP_ADDRESS}/api/v1/signup`, {
+        axios.post(`/api/v1/signup`, {
             username: signupData.username,
             password: signupData.password
         })
