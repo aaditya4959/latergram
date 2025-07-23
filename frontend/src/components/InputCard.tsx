@@ -21,7 +21,7 @@ export default function InputCard() {
     e.preventDefault();
     console.log("Form Data Submitted:", formData);
     // Here we have to update the logic to send the form Data to the backend
-    axios.post(`${IP_ADDRESS}api/v1/content` , {
+    axios.post(`${IP_ADDRESS}/api/v1/content` , {
       link: formData.url,
       type: formData.type,
       title: formData.title,
