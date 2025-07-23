@@ -2,6 +2,8 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useAuthStore } from "../stores/authStore";
 import { useNavigate } from "react-router-dom";
+//@ts-ignore
+const IP_ADDRESS = process.env.BACKEND_IP;
 
 export default function Authentication (){
     const navigate = useNavigate();
@@ -21,7 +23,7 @@ export default function Authentication (){
             password: authData.password
         }
         console.log(userData);
-        axios.post("http://localhost:8080/api/v1/signin", {
+        axios.post(`${IP_ADDRESS}/api/v1/signin`, {
             userData
         })
         .then((response) => {

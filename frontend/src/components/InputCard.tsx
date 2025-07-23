@@ -1,5 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+//@ts-ignore
+const IP_ADDRESS = process.env.BACKEND_IP;
 
 export default function InputCard() {
   const [formData, setFormData] = useState({
@@ -19,7 +21,7 @@ export default function InputCard() {
     e.preventDefault();
     console.log("Form Data Submitted:", formData);
     // Here we have to update the logic to send the form Data to the backend
-    axios.post("http://localhost:8080/api/v1/content" , {
+    axios.post(`${IP_ADDRESS}api/v1/content` , {
       link: formData.url,
       type: formData.type,
       title: formData.title,

@@ -1,6 +1,9 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+//@ts-ignore
+const IP_ADDRESS = process.env.BACKEND_IP;
+
 
 export default function Signup() {
     const navigate = useNavigate();
@@ -18,7 +21,7 @@ export default function Signup() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        axios.post("http://localhost:8080/api/v1/signup", {
+        axios.post(`${IP_ADDRESS}/api/v1/signup`, {
             username: signupData.username,
             password: signupData.password
         })

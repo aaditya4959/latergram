@@ -4,6 +4,8 @@ import Twitter from "../assets/icons/Twitter";
 import Youtube from "../assets/icons/Youtube";
 import axios from "axios";
 import React, { useEffect, useRef } from "react";
+//@ts-ignore
+const IP_ADDRESS = process.env.BACKEND_IP;
 
 interface PostCardProps {
     type: "Youtube Video" | "Twitter/X Post" ;
@@ -24,7 +26,7 @@ export default function PostCard (props : PostCardProps) {
     const tweetRef = useRef<HTMLDivElement>(null);
 
     const handleDelete = async () => {
-        const response = await axios.delete("http://localhost:8080/api/v1/content",{
+        const response = await axios.delete(`${IP_ADDRESS}/api/v1/content`,{
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`, // Include if using token auth
             },
