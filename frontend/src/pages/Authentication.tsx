@@ -16,9 +16,13 @@ export default function Authentication (){
     }
     const handleSubmit = (e:React.FormEvent) => {
         e.preventDefault();
-        axios.post("http://localhost:8080/api/v1/signin", {
+        const userData = {
             username: authData.username,
             password: authData.password
+        }
+        console.log(userData);
+        axios.post("http://localhost:8080/api/v1/signin", {
+            userData
         })
         .then((response) => {
             const {user, token} = response.data;
