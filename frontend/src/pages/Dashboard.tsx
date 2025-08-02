@@ -10,7 +10,9 @@ import Header from "../components/Header";
 import InputCard from "../components/InputCard";
 import PostCard from "../components/PostCard";
 //@ts-ignore
-const IP_ADDRESS = import.meta.env.VITE_REACT_APP_BACKEND_IP || process.env.REACT_APP_BACKEND_IP;
+const IP_ADDRESS = import.meta.env.REACT_APP_BACKEND_IP ;
+//  import.meta.env.VITE_REACT_APP_BACKEND_IP ;
+// || process.env.REACT_APP_BACKEND_IP
 
 
 export default function Dashboard () {
@@ -31,7 +33,7 @@ export default function Dashboard () {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const res = await fetch(`api/v1/content`, {
+                const res = await fetch(`http://localhost:8080/api/v1/content`, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                     },

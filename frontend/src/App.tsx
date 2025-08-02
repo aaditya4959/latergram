@@ -7,6 +7,7 @@ import Landing from './pages/Landing'
 import Authentication from './pages/Authentication'
 import PrivateRoute from './utilities/PrivateRoute'
 import Signup from './pages/Signup'
+import {About} from './pages/About'
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
 
         <Route path='/signin' element={<Authentication/>}/>
         <Route path='/signup' element={<Signup/>}/>
+        <Route path='/about' element= {<About/>}/>
 
         <Route path='/dashboard'
         element = {
