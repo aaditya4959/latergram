@@ -1,8 +1,13 @@
 import Header from "@/components/Header"
-import {motion} from "motion/react"
+import {AnimatePresence, motion} from "motion/react"
+import cardData from "../../data/about.json"
+import { useState } from "react"
 
 
 export const About = () => {
+
+    const [currentCard, setCurrentCard] = useState<typeof cardData[0] | null>(null);
+
     return (
         <>
         <Header/>
@@ -60,8 +65,57 @@ export const About = () => {
 
         <div className="min-h-screen flex flex-col bg-gradient-to-b from-[#f7f5fe] to-[#f5f4f9] p-4 text-black w-full font-sans">
             <h2 className="text-[3rem] ml-[5rem] mt-[3rem] font-semibold">All the Good Stuff</h2>
-            <div className="grid grid-cols-2 grid-rows-2 border mx-[5rem] my-[2rem] flex-1"></div>
+            <div className="grid grid-cols-2 grid-rows-2  mx-[5rem] my-[2rem] flex-1  gap-2">
+                {
+                    cardData.map((item, index) => {
+                        return (
+                        <motion.div
+                            className="flex flex-col items-center border p-4"
+                            key={index}
+                            onClick={() => setCurrentCard(item)}
+                            layoutId={`card-${index}`}
+                        >
+                            <motion.h3 layoutId={`card-title-${index}`}>{item.title}</motion.h3>
+                            <motion.p layoutId={`card-subtitle-${index}`}>{item.subtitle}</motion.p>
+                        </motion.div>
+                        );
+                    })
+                }
+
+            </div>
+            
+            <AnimatePresence>
+                {
+                    currentCard && (
+                    <motion.div
+                        className="fixed top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center z-50"
+                        onClick={() => setCurrentCard(null)}
+                    >
+                        <motion.div
+                        className="bg-white p-4 rounded-lg shadow-lg w-[60rem] h-[40rem] flex flex-col items-center justify-center text-black"
+                        layoutId={`card-${cardData.indexOf(currentCard)}`}
+                        >
+                        <motion.h3 layoutId={`card-title-${cardData.indexOf(currentCard)}`}>{currentCard.title}</motion.h3>
+                        <motion.p layoutId={`card-subtitle-${cardData.indexOf(currentCard)}`}>{currentCard.subtitle}</motion.p>
+                        <motion.p>{currentCard.content}</motion.p>
+                        </motion.div>
+                    </motion.div>
+                    )
+                }
+            </AnimatePresence>
+
         </div>
+
+        
+
+        {/* The section which will show the zoom out animation just like the iphone website.  */}
+        <div className="min-h-screen bg-gradient-to-b from-[#f5f4f9] to-[#f8f7fa] flex p-4 text-black w-full font-sans">
+
+        </div>
+
+
+
+
         </>
     )
 }
