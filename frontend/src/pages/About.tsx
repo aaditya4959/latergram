@@ -2,6 +2,7 @@ import Header from "@/components/Header"
 import {AnimatePresence, motion} from "motion/react"
 import cardData from "../../data/about.json"
 import { useState } from "react"
+import { Footer } from "@/components/Footer"
 
 
 export const About = () => {
@@ -64,16 +65,30 @@ export const About = () => {
         </motion.div>
 
         <div className="min-h-screen flex flex-col bg-gradient-to-b from-[#f7f5fe] to-[#f5f4f9] p-4 text-black w-full font-sans">
-            <h2 className="text-[3rem] ml-[5rem] mt-[3rem] font-semibold">All the Good Stuff</h2>
-            <div className="grid grid-cols-2 grid-rows-2  mx-[5rem] my-[2rem] flex-1  gap-2">
+            <motion.h2 className="text-[3rem] ml-[5rem] mt-[3rem] font-semibold" initial={{opacity:0, y:10}} whileInView={{opacity:1, y:0}} transition={{duration:0.3 , ease:"easeInOut"}}>All the Good Stuff</motion.h2>
+            <motion.div className="grid grid-cols-2 grid-rows-2  mx-[5rem] my-[2rem] flex-1  gap-2">
                 {
                     cardData.map((item, index) => {
                         return (
                         <motion.div
-                            className="flex flex-col items-center border p-4"
+                            className="flex flex-col items-center border p-4 rounded-lg shadow"
                             key={index}
                             onClick={() => setCurrentCard(item)}
                             layoutId={`card-${index}`}
+                            initial={{
+                                opacity: 0,
+                                scale: 0.8,
+                                y: 10
+                            }}
+                            whileInView={{
+                                opacity: 1,
+                                scale: 1.0,
+                                y: 0
+                            }}
+                            transition={{
+                                duration:0.3,
+                                ease: "easeInOut"
+                            }}
                         >
                             <motion.h3 layoutId={`card-title-${index}`}>{item.title}</motion.h3>
                             <motion.p layoutId={`card-subtitle-${index}`}>{item.subtitle}</motion.p>
@@ -82,7 +97,7 @@ export const About = () => {
                     })
                 }
 
-            </div>
+            </motion.div>
             
             <AnimatePresence>
                 {
@@ -97,7 +112,18 @@ export const About = () => {
                         >
                         <motion.h3 layoutId={`card-title-${cardData.indexOf(currentCard)}`}>{currentCard.title}</motion.h3>
                         <motion.p layoutId={`card-subtitle-${cardData.indexOf(currentCard)}`}>{currentCard.subtitle}</motion.p>
-                        <motion.p>{currentCard.content}</motion.p>
+                        <motion.p initial={{
+                            opacity:0,
+                            scale:0.8
+                        }}
+                        animate={{
+                            opacity:1,
+                            scale:1.0  
+                        }}
+                        transition={{
+                            duration:0.3,
+                            ease:"easeInOut"
+                        }}>{currentCard.content}</motion.p>
                         </motion.div>
                     </motion.div>
                     )
@@ -105,13 +131,13 @@ export const About = () => {
             </AnimatePresence>
 
         </div>
+                
+        {/* Some additional divisions can be made here for showing animation skills  */}
 
+        <Footer/>
         
 
-        {/* The section which will show the zoom out animation just like the iphone website.  */}
-        <div className="min-h-screen bg-gradient-to-b from-[#f5f4f9] to-[#f8f7fa] flex p-4 text-black w-full font-sans">
-
-        </div>
+    
 
 
 
